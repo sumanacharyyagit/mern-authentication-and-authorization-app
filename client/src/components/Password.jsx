@@ -40,7 +40,7 @@ const Password = () => {
               <input
                 {...formik.getFieldProps("password")}
                 className={styles.textbox}
-                type="text"
+                type="password"
                 placeholder="Password"
               />
               <button type="submit" className={styles.btn}>

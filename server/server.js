@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import connect from "./database/connection.js";
+import router from "./router/route.js";
 
 const app = express();
 
@@ -20,6 +21,8 @@ app.get("/", (req, res) => {
         message: "Welcome to HOME!",
     });
 });
+
+app.use("/api/v1", router);
 
 // Start server only when we have valid connection
 connect()

@@ -8,9 +8,11 @@ async function connect() {
     // const mongod = new MongoMemoryServer.create();
     // const getUri = mongod.getUri();
 
-    const mongod = new MongoMemoryServer();
-    await mongod.start();
-    const getUri = mongod.getUri();
+    // const mongod = new MongoMemoryServer();
+    // await mongod.start();
+    // const getUri = mongod.getUri();
+    const getUri =
+        process.env.MONGODB_URI || "mongodb://localhost:27017/otp-auth-app";
 
     const db = await mongoose.connect(getUri, {
         useNewUrlParser: true,

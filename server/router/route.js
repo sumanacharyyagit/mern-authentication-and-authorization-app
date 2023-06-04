@@ -1,27 +1,29 @@
 import { Router } from "express";
 
+import * as controller from "../controllers/appController.js";
+// import * as middleware from "../middlewares/userMiddleware.js";
+import { verifyUser } from "../middlewares/userMiddleware.js";
+import Auth, { localVariables } from "../middlewares/auth.js";
+
 const router = Router();
 
 // GET Methods
-router.route("/register").post((req, resp) => {
-    return resp.status(200).json({
-        success: true,
-        message: "Registered successfully!",
-    });
-});
+router.route("/register").post(controller.register);
 
 router.route("/registermail").post();
-router.route("/authenticate").post();
-router.route("/login").post();
+router.route("/authenticate").post((req, res) => res.end());
+router.route("/login").post(verifyUser, controller.login);
 
 // POST Methods
-router.route("/user/:username").get();
-router.route("/generateotp").get();
-router.route("/verifyotp").get();
-router.route("/createresetsession").get();
+router.route("/user/:username").get(controller.getUser);
+router
+    .route("/generateotp")
+    .get(verifyUser, localVariables, controller.generateOTP);
+router.route("/verifyotp").get(controller.verifyOTP);
+router.route("/createresetsession").get(controller.createResetSession);
 
 // PUT/PATCH Methods
-router.route("/updateuser").put();
-router.route("/resetpassword").put();
+router.route("/updateuser").put(Auth, controller.updateUser);
+router.route("/resetpassword").put(verifyUser, controller.resetPassword);
 
 export default router;

@@ -4,13 +4,14 @@ import * as controller from "../controllers/appController.js";
 // import * as middleware from "../middlewares/userMiddleware.js";
 import { verifyUser } from "../middlewares/userMiddleware.js";
 import Auth, { localVariables } from "../middlewares/auth.js";
+import { registerMail } from "../controllers/mailer.js";
 
 const router = Router();
 
 // GET Methods
 router.route("/register").post(controller.register);
 
-router.route("/registermail").post();
+router.route("/registermail").post(registerMail);
 router.route("/authenticate").post((req, res) => res.end());
 router.route("/login").post(verifyUser, controller.login);
 

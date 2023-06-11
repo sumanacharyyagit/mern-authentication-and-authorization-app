@@ -1,30 +1,31 @@
 import nodemailer from "nodemailer";
-import mailgen from "mailgen";
+import Mailgen from "mailgen";
+import { auth } from "../env.credentials.js";
 
 let nodeConfig = {
     host: "smtp.ethereal.email",
     port: 587,
     secure: false,
     auth: {
-        user: process.env.USERNAME,
-        pass: process.env.PASSWORD,
+        user: auth.USEREMAIL,
+        pass: auth.PASSWORD,
     },
 };
 
 let transporter = nodemailer.createTransport(nodeConfig);
 
-let mailGenerator = new mailgen({
+let MailGenerator = new Mailgen({
     theme: "default",
     product: {
-        name: "Mailgen Product Name",
-        link: "https://suman-dev.in",
+        name: "Suman Acharyya",
+        link: "https://suman-dev.in/",
     },
 });
 
-export const registerMail = (req, res) => {
+export const registerMail = async (req, res) => {
     const { username, userEmail, text, subject } = req.body;
     // Email body using MailGenerator
-    var email = {
+    const email = {
         body: {
             name: username,
             intro: text || "Welcome to Suman Acharyya's Email Generator",
@@ -32,10 +33,10 @@ export const registerMail = (req, res) => {
         },
     };
 
-    var emailBody = mailGenerator.generate(email);
+    var emailBody = MailGenerator.generate(email);
 
     let message = {
-        from: process.env.USERNAME,
+        from: auth.USEREMAIL,
         to: userEmail,
         subject: subject || "Successfully signedup",
         html: emailBody,
@@ -45,10 +46,11 @@ export const registerMail = (req, res) => {
         .then((resp) => {
             return res.status(200).json({
                 success: true,
-                message: "Server Error!",
+                message: "Successfully sent the email!",
             });
         })
         .catch((err) => {
+            console.log(err, "Error");
             return res.status(500).json({
                 success: false,
                 message: "Server Error!",

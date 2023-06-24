@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import { Toaster } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
 import avatar from "../assets/profile.png";
 import { profileValidate } from "../helper/validate";
 import convertToBase64 from "../helper/convert";
@@ -10,30 +10,40 @@ import styles from "../styles/Username.module.css";
 import extend from "../styles/Profile.module.css";
 import useFetch from "../hooks/fetch.hook";
 import { useAuthStore } from "../store/store";
+import { updateUSer } from "../helper/helper";
 
 const Profile = () => {
     const [file, setFile] = useState();
 
-    const userName = useAuthStore((state) => state.auth.username);
-    const [{ isLoading, apiData, serverError }] = useFetch(`/user/${userName}`);
+    const [{ isLoading, apiData, serverError }] = useFetch();
 
-    console.log(apiData);
+    const navigate = useNavigate();
+
+    // setFile(() => apiData?.user?.profile);
 
     const formik = new useFormik({
         initialValues: {
-            firstName: apiData?.firstName || "",
-            lastName: apiData?.firstName || "",
-            email: apiData?.email || "",
-            mobile: apiData?.mobile || "",
-            address: apiData?.address || "",
+            firstName: apiData?.user?.firstName || "",
+            lastName: apiData?.user?.lastName || "",
+            email: apiData?.user?.email || "",
+            mobile: apiData?.user?.mobile || "",
+            address: apiData?.user?.address || "",
         },
         enableReinitialize: true,
         validate: profileValidate,
         validateOnBlur: false,
         validateOnChange: false,
         onSubmit: async (values) => {
-            values = await Object.assign(values, { profile: file || "" });
-            console.log(values);
+            values = await Object.assign(values, {
+                profile: file || apiData?.user?.profile || "",
+            });
+            let updatePromise = updateUSer(values);
+
+            toast.promise(updatePromise, {
+                loading: "Updating",
+                success: <b>Updated successfully...!</b>,
+                error: <b>Could not update...!</b>,
+            });
         },
     });
 
@@ -42,6 +52,12 @@ const Profile = () => {
         const base64 = await convertToBase64(e.target.files[0]);
         setFile(base64);
     };
+
+    // LogOut Handler Function
+    function userLogOutHandler() {
+        localStorage.removeItem("token");
+        navigate("/");
+    }
 
     if (isLoading) {
         return <h1 className="text-2xl font-bold">Loading...!</h1>;
@@ -70,7 +86,9 @@ const Profile = () => {
                         <div className="profile flex justify-center py-4">
                             <label htmlFor="profile">
                                 <img
-                                    src={file || avatar}
+                                    src={
+                                        file || apiData?.user?.profile || avatar
+                                    }
                                     className={`${styles.profile_img} ${extend.profile_img}`}
                                     alt="avatar"
                                 />
@@ -125,9 +143,13 @@ const Profile = () => {
                         <div className="text-center py-4">
                             <span className="text-gray-500">
                                 Come back later?{" "}
-                                <Link className="text-red-500" to="/">
+                                <button
+                                    onClick={userLogOutHandler}
+                                    className="text-red-500"
+                                    to="/"
+                                >
                                     Logout
-                                </Link>
+                                </button>
                             </span>
                         </div>
                     </form>

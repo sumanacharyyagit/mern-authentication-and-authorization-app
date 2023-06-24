@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 export default async function Auth(req, res, next) {
     try {
         // Authorize header to validate request
-        const token = req.headers["authorization"].split("Bearer ")[1];
+        const token = req.headers["authorization"].split("Bearer ")[1];
 
         //retrieve user details fro logged in user
         const decodedToken = await jwt.verify(
@@ -17,7 +17,7 @@ export default async function Auth(req, res, next) {
     } catch (error) {
         console.log("Error: " + error);
         return res.status(401).json({
-            success: falsem,
+            success: false,
             message: "Error while authentication",
             error: error,
         });

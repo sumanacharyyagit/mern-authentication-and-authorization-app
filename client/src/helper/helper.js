@@ -1,11 +1,20 @@
 import axios from "axios";
-
+import jwtDecode from "jwt-decode";
 // Set BaseURL
 // axios.defaults.baseURL = process.env.REACT_APP_BASEURL;
 const REACT_APP_BASEURL = "http://localhost:8080";
 axios.defaults.baseURL = REACT_APP_BASEURL;
 
 // Make API request
+// To GET UserName from Token
+export async function getUsername() {
+    const token = localStorage.getItem("token");
+    if (!token) return Promise.resolve("Token not found!");
+    // if (!token) return Promise.reject("Token not found!");
+    let decodedToken = jwtDecode(token);
+    return decodedToken;
+}
+
 // Authenticate Function
 export async function authenticate(username) {
     try {

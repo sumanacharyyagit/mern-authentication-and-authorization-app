@@ -20,12 +20,13 @@ export default function useFetch(query) {
         const fetchData = async () => {
             try {
                 setData((pre) => ({ ...pre, isLoading: true }));
-                // const dataVal = await getUsername();
-                const { username } = await getUsername();
-                // console.log("dataVal", "dataVal", dataVal);
+
+                const { username } = !query ? await getUsername() : "";
+
                 const { data, status } = !query
                     ? await axios.get(`/api/v1/user/${username}`)
                     : await axios.get(`/api/v1/${query}`);
+
                 if (status === 200) {
                     setData((pre) => ({
                         ...pre,
@@ -40,7 +41,6 @@ export default function useFetch(query) {
                     }));
                 }
             } catch (error) {
-                console.log("ERROR is here");
                 setData((pre) => ({
                     ...pre,
                     isLoading: false,

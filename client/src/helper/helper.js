@@ -9,7 +9,7 @@ axios.defaults.baseURL = REACT_APP_BASEURL;
 // To GET UserName from Token
 export async function getUsername() {
     const token = localStorage.getItem("token");
-    if (!token) return Promise.resolve("Token not found!");
+    if (!token) return Promise.reject("Token not found!");
     // if (!token) return Promise.reject("Token not found!");
     let decodedToken = jwtDecode(token);
     return decodedToken;
@@ -99,6 +99,8 @@ export async function updateUSer(response) {
 // Generate OTP for User profile Function
 export async function generateOTP(username) {
     try {
+        const token = localStorage.getItem("token");
+
         const {
             data: { message, otp },
             status,
@@ -131,7 +133,7 @@ export async function generateOTP(username) {
 }
 
 // Verify OTP for User profile Function
-export async function verifyOTP({ username, otp }) {
+export async function verifyOTP(username, otp) {
     try {
         const { data, status } = await axios.get(`/api/v1/verifyotp`, {
             params: { username, otp },

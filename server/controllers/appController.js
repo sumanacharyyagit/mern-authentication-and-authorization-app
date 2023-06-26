@@ -285,7 +285,11 @@ export async function createResetSession(req, res) {
             req.app.locals.resetSession = false;
             return res
                 .status(201)
-                .json({ success: true, message: "Access Granted" });
+                .json({
+                    success: true,
+                    message: "Access Granted",
+                    flag: req.app.locals.resetSession,
+                });
         }
         return res
             .status(440)

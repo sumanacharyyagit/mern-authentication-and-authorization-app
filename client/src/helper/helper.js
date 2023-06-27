@@ -114,7 +114,7 @@ export async function generateOTP(username) {
             }
         );
 
-        if (status === "201") {
+        if (status === 201) {
             const {
                 data: { email },
             } = await getUser({ username });

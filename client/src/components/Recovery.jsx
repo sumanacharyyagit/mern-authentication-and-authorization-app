@@ -5,6 +5,7 @@ import styles from "../styles/Username.module.css";
 import { useAuthStore } from "../store/store";
 import { generateOTP, verifyOTP } from "../helper/helper";
 import { useNavigate } from "react-router-dom";
+
 const Recovery = () => {
     const { username } = useAuthStore((state) => state.auth);
     const [OTP, setOTP] = useState();

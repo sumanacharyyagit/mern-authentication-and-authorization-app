@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { Toaster, toast } from "react-hot-toast";
@@ -13,8 +13,6 @@ import { verifyPassword } from "../helper/helper";
 const Password = () => {
     const userName = useAuthStore((state) => state.auth.username);
     const [{ isLoading, apiData, serverError }] = useFetch(`/user/${userName}`);
-
-    const navigate = useNavigate();
 
     const formik = new useFormik({
         initialValues: {

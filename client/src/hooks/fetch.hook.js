@@ -7,48 +7,45 @@ import { getUsername } from "../helper/helper";
 const REACT_APP_BASEURL = "http://localhost:8080";
 axios.defaults.baseURL = REACT_APP_BASEURL;
 
-// Custom Fetch Hook
+/** custom hook */
 export default function useFetch(query) {
-    const [getData, setData] = useState({
+    const [getData, setData] = useState(() => ({
         isLoading: false,
         apiData: undefined,
         status: null,
         serverError: null,
-    });
+    }));
 
     useEffect(() => {
-        const fetchData = async () => {
+        (async () => {
             try {
-                setData((pre) => ({ ...pre, isLoading: true }));
-
+                setData((prev) => ({ ...prev, isLoading: true }));
                 const { username } = !query ? await getUsername() : "";
-
                 const { data, status } = !query
                     ? await axios.get(`/api/v1/user/${username}`)
                     : await axios.get(`/api/v1/${query}`);
-
-                if (status === 200) {
-                    setData((pre) => ({
-                        ...pre,
-                        isLoading: false,
-                        status,
+                if (status === 201) {
+                    setData((prev) => ({ ...prev, isLoading: false }));
+                    setData((prev) => ({
+                        ...prev,
                         apiData: data,
-                    }));
-                } else {
-                    setData((pre) => ({
-                        ...pre,
-                        isLoading: false,
+                        status: status,
                     }));
                 }
+                setData((prev) => ({ ...prev, isLoading: false }));
             } catch (error) {
-                setData((pre) => ({
-                    ...pre,
+                setData((prev) => ({
+                    ...prev,
                     isLoading: false,
                     serverError: error,
                 }));
+            } finally {
+                console.log(
+                    "useFetch USE-EFFECT RUNNING TWICE\nTHIS IS A BUG",
+                    query
+                );
             }
-        };
-        fetchData();
+        })();
     }, [query]);
 
     return [getData, setData];

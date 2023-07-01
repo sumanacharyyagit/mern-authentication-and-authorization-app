@@ -281,19 +281,17 @@ export async function verifyOTP(req, res) {
 
 export async function createResetSession(req, res) {
     try {
-        if (req.app.locals.resetSession === true) {
+        if (req.app.locals.resetSession) {
             req.app.locals.resetSession = false;
-            return res
-                .status(201)
-                .json({
-                    success: true,
-                    message: "Access Granted",
-                    flag: req.app.locals.resetSession,
-                });
+            return res.status(201).json({
+                success: true,
+                message: "Access Granted",
+                flag: req.app.locals.resetSession,
+            });
         }
         return res
             .status(440)
-            .json({ success: true, message: "Session Expired!" });
+            .json({ success: false, message: "Session Expired!" });
     } catch (error) {
         console.log("Error: ", error);
         return res

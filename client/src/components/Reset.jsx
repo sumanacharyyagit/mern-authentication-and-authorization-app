@@ -15,9 +15,9 @@ const Reset = () => {
     const [{ isLoading, apiData, status, serverError }] =
         useFetch("createresetsession");
 
-    // useEffect(() => {
-    //     console.log(apiData);
-    // }, []);
+    useEffect(() => {
+        console.log(apiData);
+    }, []);
 
     const formik = new useFormik({
         initialValues: {
@@ -53,7 +53,7 @@ const Reset = () => {
         return <h1 className="text-2xl text-red-500">{serverError.message}</h1>;
     }
 
-    if (status !== 201) {
+    if (status && status !== 201) {
         return <Navigate to={"/password"} replace:true />;
     }
     return (
